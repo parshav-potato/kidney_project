@@ -1,0 +1,7 @@
+/output/
+__pycache__/
+*.egg-info/
+*.pyc
+.venv/
+manuscript_stats.json
+.python-version
