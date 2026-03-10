@@ -5,3 +5,4 @@ __pycache__/
 .venv/
 manuscript_stats.json
 .python-version
+CLAUDE.md

@@ -51,6 +51,10 @@ from kidney.analysis.nhanes import (
     summarize_nhanes_conditions,
     prepare_nhanes_for_comparison,
 )
+from kidney.analysis.national_reconciliation import (
+    reconcile_national_prevalence,
+    format_reconciliation_result,
+)
 from kidney.visualization.trends import (
     plot_condition_prevalences,
     plot_any_condition_with_ci,
@@ -336,6 +340,16 @@ def run_full_analysis(
             print(f"   Error during NHIS vs NHANES plots: {exc}")
     else:
         print("\n22-24. Skipping NHIS vs NHANES plots (NHANES data not loaded).")
+
+    # --- Analysis 21: National prevalence reconciliation ---
+    print("\n23. National prevalence reconciliation (CDC vs survey)...")
+    try:
+        recon_results = reconcile_national_prevalence(dataframes, nhanes_df)
+        for source, rec in recon_results.items():
+            print(f"\n--- {source.upper()} ---")
+            print(format_reconciliation_result(rec))
+    except Exception as exc:
+        print(f"   Error during national reconciliation: {exc}")
 
     # --- Export CSV ---
     csv_rows = []

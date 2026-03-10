@@ -20,3 +20,4 @@ dependencies = [
 [project.scripts]
 kidney-analysis = "kidney.pipeline:main"
 kidney-manuscript = "kidney.analysis.manuscript:main"
+kidney-reconciliation = "kidney.analysis.reconciliation_report:main"

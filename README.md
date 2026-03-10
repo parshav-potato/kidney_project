@@ -40,6 +40,9 @@ kidney-analysis
 
 # Generate manuscript statistics with 95% CI (saves manuscript_stats.json)
 kidney-manuscript
+
+# Run national prevalence reconciliation report (saves reconciliation_results.json)
+kidney-reconciliation
 ```
 
 ## Architecture
@@ -58,6 +61,8 @@ src/kidney/
         donors.py          # Donor categories, population segments, Venn data, projections
         nhanes.py          # NHANES condition flags, cross-validation
         manuscript.py      # Pooled-period stats, demographic comparisons
+        national_reconciliation.py  # Constrained QP: CDC marginals + survey intersections
+        reconciliation_report.py    # Standalone CLI report for the reconciliation
     visualization/
         style.py           # save_and_show(), hide_top_right()
         trends.py          # Generic plot_stratified_trends() + specialised plots
@@ -73,6 +78,18 @@ src/kidney/
 **Unified eligibility masks** (`analysis/eligibility.py`): `eligible_mask()` and `any_condition_mask()` eliminate 6+ inline duplications of eligibility formulas. Parameters control variants (e.g., `exclude_prediabetes=False` for the manuscript's impact analysis).
 
 **Generic trend plotting** (`visualization/trends.py`): `plot_stratified_trends()` replaces 8 near-identical plotting functions with one configurable function.
+
+**National prevalence reconciliation** (`analysis/national_reconciliation.py`): Bridges CDC national marginals (obesity 40.3%, diabetes 12.0%, prediabetes 41.0%, hypertension 47.7%) with survey microdata. The survey gives the intersection structure (how conditions overlap); the CDC gives the true marginal prevalences. For each intersection, scaling estimates preserve the survey's conditional probabilities while adjusting to CDC marginals: `e_ic = survey_intersection * CDC(c) / survey(c)`. The unconstrained optimum is the mean of estimates per variable. A convex QP with monotonicity constraints is solved via SLSQP, and the 4 CDC marginals + 11 optimized intersections are plugged into inclusion-exclusion to yield national P(B U D U P U H). Run `kidney-reconciliation` for a step-by-step breakdown.
+
+### NHANES Cross-Validation
+
+NHANES 2021-2022 provides lab/exam-based condition flags as a cross-validation source against NHIS self-report. Key differences:
+
+- **NHANES uses measurement thresholds**: HbA1c >= 6.5% or fasting glucose >= 126 (diabetes), HbA1c 5.7-6.4% or glucose 100-125 (prediabetes), SBP >= 130 or DBP >= 80 (hypertension, ACC/AHA 2017), BMI >= 30 (obesity).
+- **NHIS uses self-report**: "Has a doctor ever told you..."
+- NHANES marginals are much closer to CDC national estimates than NHIS (e.g., NHANES obesity 39.3% vs CDC 40.3%, while NHIS reports 31.1%).
+- The reconciliation runs on both sources. NHANES has a much smaller gap (+3.9 pp) vs NHIS (+39.5 pp) between the reconciled national union and the survey's direct union.
+- NHANES has zero overlap between diabetes and prediabetes by construction (mutually exclusive lab thresholds), so those intersection terms are 0.
 
 ### NHIS Survey Year Discontinuity
 
