@@ -21,3 +21,4 @@ dependencies = [
 kidney-analysis = "kidney.pipeline:main"
 kidney-manuscript = "kidney.analysis.manuscript:main"
 kidney-reconciliation = "kidney.analysis.reconciliation_report:main"
+kidney-ipf-reconciliation = "kidney.analysis.ipf_reconciliation_report:main"

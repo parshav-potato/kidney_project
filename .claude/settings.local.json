@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "WebFetch(domain:www.cdc.gov)"
+      "WebFetch(domain:www.cdc.gov)",
+      "WebFetch(domain:github.com)"
     ]
   }
 }

@@ -55,6 +55,10 @@ from kidney.analysis.national_reconciliation import (
     reconcile_national_prevalence,
     format_reconciliation_result,
 )
+from kidney.analysis.ipf_reconciliation import (
+    reconcile_national_prevalence_ipf,
+    format_ipf_result,
+)
 from kidney.visualization.trends import (
     plot_condition_prevalences,
     plot_any_condition_with_ci,
@@ -350,6 +354,16 @@ def run_full_analysis(
             print(format_reconciliation_result(rec))
     except Exception as exc:
         print(f"   Error during national reconciliation: {exc}")
+
+    # --- Analysis 22: IPF national prevalence reconciliation ---
+    print("\n24. National prevalence reconciliation (IPF method)...")
+    try:
+        ipf_results = reconcile_national_prevalence_ipf(dataframes, nhanes_df)
+        for source, (rec, ipf_res) in ipf_results.items():
+            print(f"\n--- {source.upper()} (IPF) ---")
+            print(format_ipf_result(rec, ipf_res))
+    except Exception as exc:
+        print(f"   Error during IPF reconciliation: {exc}")
 
     # --- Export CSV ---
     csv_rows = []

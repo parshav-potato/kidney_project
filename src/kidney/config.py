@@ -153,3 +153,8 @@ NHANES_CONDITION_ORDER: list[str] = [
     "Diabetes", "Prediabetes", "Hypertension",
     "Historic Hypertension", "Obesity", "Any Condition",
 ]
+
+# IPF reconciliation defaults
+IPF_MAX_ITERATIONS: int = 200
+IPF_TOLERANCE: float = 1e-10
+IPF_CELL_FLOOR: float = 1e-12
